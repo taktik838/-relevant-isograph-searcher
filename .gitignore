@@ -1,0 +1,14 @@
+__pycache__/*
+venv/
+venv3.8/
+
+*.flac
+*.mp3
+*.ipynb
+*.tsv
+
+test*
+!tests/
+
+
+src/integrations/google/secret.json

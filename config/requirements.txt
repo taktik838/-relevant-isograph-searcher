@@ -1,0 +1,7 @@
+# for nn text embending
+tensorflow_text
+bokeh
+simpleneighbors[annoy]
+tqdm
+
+elasticsearch

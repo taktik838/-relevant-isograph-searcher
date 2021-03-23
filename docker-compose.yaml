@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  elastic:
+    image: elasticsearch:7.11.2
+    container_name: elasticsearch
+    volumes:
+      - isograph_elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+  gateway:
+    image: python:3.8
+    container_name: gateway
+
+volumes:
+  isograph_elasticsearch:
+    driver: local
