@@ -5,13 +5,9 @@ from aiohttp_apispec import response_schema
 from marshmallow import Schema
 from marshmallow import fields
 
-
-class Entity(Schema):
-    id = fields.Str(required=False, allow_none=True, default=None)
-    url = fields.Str(required=True, allow_none=False)
-    description = fields.Str(required=False, allow_none=False, default='')
+from transport.handlers import Entity
  
-
+ 
 class AddRequest(Schema):
     entity = fields.Nested(
         nested=Entity,
@@ -23,13 +19,36 @@ class AddRequest(Schema):
 
 class AddResponse(Schema):
     success = fields.Bool(required=True, allow_none=False, description='Добавилась запись в elasticsearch или нет')
-    id = fields.Str(required=False, allow_none=False, description='Id записи в elasticsearch')
     error_message = fields.Str(required=False, allow_none=False, description='Почему запись не была добавлена. Только если seccess=false')
+
+
+class UpdateRequest(Schema):
+    entity = fields.Nested(
+        nested=Entity,
+        many=True,
+        required=True,
+        description="Файл или проект",
+    )
+
+
+class UpdateResponse(Schema):
+    success = fields.Bool(required=True, allow_none=False, description='Обновилась запись в elasticsearch или нет')
+    error_message = fields.Str(required=False, allow_none=False, description='Почему запись не была обновлена. Только если seccess=false') 
+
+
+class DeleteRequest(Schema):
+    url = fields.Str(required=True, allow_none=False)
+
+
+class DeleteResponse(Schema):
+    success = fields.Bool(required=True, allow_none=False, description='Удалилась запись в elasticsearch или нет')
+    error_message = fields.Str(required=False, allow_none=False, description='Почему запись не была удалена. Только если seccess=false')
+    
 
 
 @docs(
     tags=['elasticsearch'],
-    summary="Запрос оформления дебетовой карты"
+    summary="Добавить файлы"
 )
 @request_schema(AddRequest)
 @response_schema(AddResponse, 200)
@@ -38,18 +57,20 @@ async def add(request: web.Request) -> web.Response:
 
 
 @docs(
-    tags=['elasticsearch']
+    tags=['elasticsearch'],
+    summary="Изменить описание. Поиск только по url"
 )
-@request_schema(AddRequest)
-@response_schema(AddResponse, 200)
+@request_schema(UpdateRequest)
+@response_schema(UpdateResponse, 200)
 async def update(request: web.Request) -> web.Response:
     return web.json_response()
 
 
 @docs(
-    tags=['elasticsearch']
+    tags=['elasticsearch'],
+    summary="Удалить файл. Поиск только по url"
 )
-@request_schema(AddRequest)
-@response_schema(AddResponse, 200)
+@request_schema(DeleteRequest)
+@response_schema(DeleteResponse, 200)
 async def delete(request: web.Request) -> web.Response:
     return web.json_response()
