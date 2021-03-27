@@ -5,9 +5,13 @@ from aiohttp_apispec import response_schema
 from marshmallow import Schema
 from marshmallow import fields
 
-from transport.handlers import Entity
  
  
+class Entity(Schema):
+    url = fields.Url(required=True, allow_none=False)
+    description = fields.Str(required=False, allow_none=False, missing='')
+
+
 class AddRequest(Schema):
     entity = fields.Nested(
         nested=Entity,
