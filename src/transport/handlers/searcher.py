@@ -58,7 +58,9 @@ class GetAllResponse(Schema):
 
 @docs(
     tags=['search'],
-    summary="Поиск по голосу"
+    summary="Поиск по голосу",
+    description='''Больше информации можно найти на 
+    https://cloud.google.com/speech-to-text/docs/reference/rest/v1/RecognitionConfig'''
 )
 @request_schema(BySpeechRequest)
 @response_schema(BySpeechResponse, 200)
