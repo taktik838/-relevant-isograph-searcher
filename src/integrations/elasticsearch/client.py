@@ -57,7 +57,7 @@ async def get_by_description_vector(
     ) -> List[Dict[str, Union[int, str]]]:
     result = await _ElasticClient.search(index=index, body={
         "size": size,
-        "from": (page - 1) * size,
+        "from": max(0, page - 1) * size,
         "min_score": min_similarity,
         "_source": {
             "includes": ['url', 'description']
@@ -106,7 +106,7 @@ async def delete(url, index=_INDEX):
 # async def get_all(page: int = 1, size: int = 10, index=_INDEX):
 #     result = await _ElasticClient.search(index='test_imgs', body={
 #         "size": size,
-#         "from": (page - 1) * size,
+#         "from": max(0, page - 1) * size,
 #         "_source": {
 #         "includes": ['url', 'description']
 #     },
