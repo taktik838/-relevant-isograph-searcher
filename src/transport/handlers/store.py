@@ -4,6 +4,7 @@ from aiohttp_apispec import request_schema
 from aiohttp_apispec import response_schema
 from marshmallow import Schema
 from marshmallow import fields
+from integrations.elasticsearch.client import add_entities, update as es_update, delete as es_delete
 
  
  
@@ -23,31 +24,8 @@ class AddRequest(Schema):
 
 class AddResponse(Schema):
     success = fields.Bool(required=True, allow_none=False, description='Добавилась запись в elasticsearch или нет')
-    error_message = fields.Str(required=False, allow_none=False, description='Почему запись не была добавлена. Только если seccess=false')
-
-
-class UpdateRequest(Schema):
-    entity = fields.Nested(
-        nested=Entity,
-        many=True,
-        required=True,
-        description="Файл или проект",
-    )
-
-
-class UpdateResponse(Schema):
-    success = fields.Bool(required=True, allow_none=False, description='Обновилась запись в elasticsearch или нет')
-    error_message = fields.Str(required=False, allow_none=False, description='Почему запись не была обновлена. Только если seccess=false') 
-
-
-class DeleteRequest(Schema):
-    url = fields.Str(required=True, allow_none=False)
-
-
-class DeleteResponse(Schema):
-    success = fields.Bool(required=True, allow_none=False, description='Удалилась запись в elasticsearch или нет')
-    error_message = fields.Str(required=False, allow_none=False, description='Почему запись не была удалена. Только если seccess=false')
-    
+    error_message = fields.Str(required=False, allow_none=False, 
+                               description='Почему запись не была добавлена. Только если seccess=false')
 
 
 @docs(
@@ -57,7 +35,23 @@ class DeleteResponse(Schema):
 @request_schema(AddRequest)
 @response_schema(AddResponse, 200)
 async def add(request: web.Request) -> web.Response:
-    return web.json_response()
+    await add_entities(request['data']['entity'])
+    return web.json_response({'success': True})
+
+
+class UpdateRequest(Schema):
+    entity = fields.Nested(
+        nested=Entity,
+        many=False,
+        required=True,
+        description="Файл или проект",
+    )
+
+
+class UpdateResponse(Schema):
+    success = fields.Bool(required=True, allow_none=False, description='Обновилась запись в elasticsearch или нет')
+    error_message = fields.Str(required=False, allow_none=False, 
+                               description='Почему запись не была обновлена. Только если seccess=false')
 
 
 @docs(
@@ -67,7 +61,18 @@ async def add(request: web.Request) -> web.Response:
 @request_schema(UpdateRequest)
 @response_schema(UpdateResponse, 200)
 async def update(request: web.Request) -> web.Response:
-    return web.json_response()
+    await es_update(**request['data']['entity'])
+    return web.json_response({'success': True})
+
+
+class DeleteRequest(Schema):
+    url = fields.Str(required=True, allow_none=False)
+
+
+class DeleteResponse(Schema):
+    success = fields.Bool(required=True, allow_none=False, description='Удалилась запись в elasticsearch или нет')
+    error_message = fields.Str(required=False, allow_none=False, 
+                               description='Почему запись не была удалена. Только если seccess=false')
 
 
 @docs(
@@ -77,4 +82,5 @@ async def update(request: web.Request) -> web.Response:
 @request_schema(DeleteRequest)
 @response_schema(DeleteResponse, 200)
 async def delete(request: web.Request) -> web.Response:
-    return web.json_response()
+    await es_delete(**request['data']['entity'])
+    return web.json_response({'success': True})
