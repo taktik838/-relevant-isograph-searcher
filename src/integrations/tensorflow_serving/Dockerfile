@@ -18,14 +18,14 @@ EXPOSE 8500
 # REST
 EXPOSE 8501
 
-# ENV MODEL_CONFIG_FILE=/models/models.config
-ENV MODEL_BASE_PATH=/models
-ENV MODEL_NAME=embed_text
+ENV MODEL_CONFIG_FILE=/models/models.config
+# ENV MODEL_BASE_PATH=/models
+# ENV MODEL_NAME=embed_text
 
 RUN echo '#!/bin/bash \n\n\
         tensorflow_model_server --port=8500 --rest_api_port=8501 \
-        --model_name=${MODEL_NAME} --model_base_path=${MODEL_BASE_PATH}/${MODEL_NAME}' \
-        # --model_config_file=${MODEL_CONFIG_FILE}' \
+        # --model_name=${MODEL_NAME} --model_base_path=${MODEL_BASE_PATH}/${MODEL_NAME}' \
+        --model_config_file=${MODEL_CONFIG_FILE}' \
         > /usr/bin/tf_serving_entrypoint.sh \
     && chmod +x /usr/bin/tf_serving_entrypoint.sh
 
