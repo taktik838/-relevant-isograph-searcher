@@ -6,6 +6,8 @@ venv3.8/
 *.mp3
 *.ipynb
 *.tsv
+*.tar
+*.gz
 
 test*
 !tests/
