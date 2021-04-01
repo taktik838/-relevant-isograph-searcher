@@ -38,8 +38,21 @@ class BySpeechResponse(Schema):
 @request_schema(BySpeechRequest)
 @response_schema(BySpeechResponse, 200)
 async def bySpeech(request: web.Request) -> web.Response:
-    request['data']['speech'] = base64.b64decode(request['data']['speech'])
-    result = await get_by_speech(**request['data'])
+    kwargs = dict(
+        speech=base64.b64decode(request['data']['speech']),
+        language_code=request['data'].get('language_code'),
+        channels=request['data'].get('channels'),
+        rate=request['data'].get('rate'),
+        encoding=request['data'].get('encoding'),
+        page=int(request.match_info.get('page', 1)),
+        size=request['data'].get('per_one_time'),
+        min_similarity=request['data'].get('min_similarity'),
+    )
+    result = await get_by_speech(**{
+        key: value
+        for key, value in kwargs.items()
+        if value is not None
+    })
     return web.json_response(result)
 
 
@@ -60,8 +73,18 @@ class ByTextResponse(Schema):
 @request_schema(ByTextRequest)
 @response_schema(ByTextResponse, 200)
 async def byText(request: web.Request) -> web.Response:
-    result = await get_by_text(**request['data'])
-    return web.json_response({'success': True})
+    kwargs = dict(
+        text=request['data'].get('text'), 
+        page=int(request.match_info.get('page')), 
+        size=int(request['data'].get('per_one_time')), 
+        min_similarity=float(request['data'].get('min_similarity'))
+    )
+    result = await get_by_text(**{
+        key: value
+        for key, value in kwargs.items()
+        if value is not None
+    })
+    return web.json_response({'entities': result})
 
 
 class ByUrlRequest(Schema):
@@ -80,7 +103,7 @@ class ByUrlResponse(Schema):
 @request_schema(ByUrlRequest)
 @response_schema(ByUrlResponse, 200)
 async def byUrl(request: web.Request) -> web.Response:
-    result = await get_by_url(**request['data'])
+    result = await get_by_url(url=request['data']['url'])
     return web.json_response(result)
 
 

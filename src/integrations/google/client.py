@@ -1,13 +1,20 @@
+import asyncio
+
 from google.cloud import speech
 
 
 AUTH_PATH = 'src/integrations/google/secret.json'
-client = speech.SpeechAsyncClient.from_service_account_file(AUTH_PATH)
+# loop = asyncio.get_running_loop()
+client = None
 
 
 async def speech2text(
         content: bytes, language_code: str = 'ru-RU', channels: int = 1, rate: int = 16000, encoding: str = 'LINEAR16'
     ) -> str:
+    global client
+    if not client:
+        client = speech.SpeechAsyncClient.from_service_account_file(AUTH_PATH)
+    
     audio = speech.RecognitionAudio(content=content)
     try:
         encoding = speech.RecognitionConfig.AudioEncoding[encoding.upper()]

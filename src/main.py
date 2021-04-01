@@ -5,6 +5,7 @@ import settings
 import sentry_sdk
 from transport.routes import setup_routes
 from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+from transport.middlewares import MIDDLEWARES
 # from utils.self_check import self_check
 
 
@@ -19,7 +20,7 @@ sentry_sdk.init(
 )
 
 async def init():
-    app = web.Application()
+    app = web.Application(middlewares=MIDDLEWARES, client_max_size=0)
     # await self_check()
     setup_routes(app)
     setup_aiohttp_apispec(app, **settings.APISPEC_CONF)

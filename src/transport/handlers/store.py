@@ -4,7 +4,8 @@ from aiohttp_apispec import request_schema
 from aiohttp_apispec import response_schema
 from marshmallow import Schema
 from marshmallow import fields
-from integrations.elasticsearch.client import add_entities, update as es_update, delete as es_delete
+from services.store import add_entities, update_entity
+from integrations.elasticsearch import client as es_api
 
  
  
@@ -40,12 +41,8 @@ async def add(request: web.Request) -> web.Response:
 
 
 class UpdateRequest(Schema):
-    entity = fields.Nested(
-        nested=Entity,
-        many=False,
-        required=True,
-        description="Файл или проект",
-    )
+    url = fields.Url(required=True, allow_none=False)
+    new_description = fields.Str(required=False, allow_none=False, missing='')
 
 
 class UpdateResponse(Schema):
@@ -61,7 +58,7 @@ class UpdateResponse(Schema):
 @request_schema(UpdateRequest)
 @response_schema(UpdateResponse, 200)
 async def update(request: web.Request) -> web.Response:
-    await es_update(**request['data']['entity'])
+    await update_entity(url=request['data']['url'], new_description=request['data']['new_description'])
     return web.json_response({'success': True})
 
 
@@ -82,5 +79,5 @@ class DeleteResponse(Schema):
 @request_schema(DeleteRequest)
 @response_schema(DeleteResponse, 200)
 async def delete(request: web.Request) -> web.Response:
-    await es_delete(**request['data']['entity'])
+    await es_api.delete(url=request['data']['url'])
     return web.json_response({'success': True})

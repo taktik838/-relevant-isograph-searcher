@@ -1,8 +1,9 @@
 from typing import Iterable, List, Union
 
 import aiohttp
+import json
 
-ENDPOINT = 'localhost:8501/v1/models'
+ENDPOINT = 'http://localhost:8501/v1/models'
 
 async def embed_text(text: Union[Iterable[str], str]) -> List[float]:
     if isinstance(text, str):
@@ -11,7 +12,7 @@ async def embed_text(text: Union[Iterable[str], str]) -> List[float]:
     async with aiohttp.ClientSession() as session:
         async with session.post(
             '/'.join((ENDPOINT, 'embed_text:predict')),
-            data=text
+            data=json.dumps({'instances': text})
         ) as response:
-            result: List[float] = await response.text()
-            return result
+            result: List[float] = await response.json()
+            return result['predictions']

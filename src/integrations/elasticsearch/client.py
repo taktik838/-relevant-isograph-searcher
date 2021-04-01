@@ -21,26 +21,26 @@ def _gen_data(entities: List[Dict[str, Any]], ot_type, index=_INDEX):
         }
         
         
-async def init_store() -> None:
-    if _MAPING_FOR_STORE_IS_CREATED:
-        return
-    mapping = {
-        "properties": {
-            "description": {
-                "type": "text"
-            },
-            "description_vector": {
-                "type": "dense_vector",
-                "dims": 512
-            }
-        }
-    }
-    await _ElasticClient.indices.put_mapping(index=_INDEX, body=mapping)
-    _MAPING_FOR_STORE_IS_CREATED = True
+# async def init_store() -> None:
+#     if _MAPING_FOR_STORE_IS_CREATED:
+#         return
+#     mapping = {
+#         "properties": {
+#             "description": {
+#                 "type": "text"
+#             },
+#             "description_vector": {
+#                 "type": "dense_vector",
+#                 "dims": 512
+#             }
+#         }
+#     }
+#     await _ElasticClient.indices.put_mapping(index=_INDEX, body=mapping)
+#     _MAPING_FOR_STORE_IS_CREATED = True
     
 
 async def add_entities(entities: List[Dict[str, Any]], index=_INDEX):
-    await init_store()
+    # await init_store()
     return await async_bulk(_ElasticClient, _gen_data(entities, ot_type='create', index=index))
 
 
@@ -66,12 +66,11 @@ async def get_by_description_vector(
             "script_score": {
                 "query" : {"match_all": {}},
                 "script": {
-                    "source": """
-                        double value = cosineSimilarity(params.description_vector, 'description_vector');
-                        if (value < 1) {
-                            return 1 - Math.acos(value) / Math.PI
-                        }
-                        return 1""", 
+                    "source": "double value = cosineSimilarity(params.description_vector, 'description_vector');"
+                              "if (value < 1) {"
+                              "    return 1 - Math.acos(value) / Math.PI"
+                              "}"
+                              "return 1", 
                     "params": {
                         "description_vector": description_vector
                     }
@@ -94,8 +93,10 @@ async def get_by_description_vector(
 
 async def update(url, new_description, new_description_vector, index=_INDEX):
     return await _ElasticClient.update(index, id=url, body={
-        'description': new_description,
-        'description_vector': new_description_vector,
+        'doc': {
+            'description': new_description,
+            'description_vector': new_description_vector,
+        }
     })
     
 

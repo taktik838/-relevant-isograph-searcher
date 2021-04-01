@@ -6,7 +6,7 @@ from integrations.elasticsearch.client import get_by_description_vector
 
 
 async def get_by_text(text: str, page=0, size=10, min_similarity=0.6) -> Dict[str, Union[str, float]]:
-    vector: List[float] = await embed_text(text)
+    vector: List[float] = (await embed_text(text))[0]
     result = await get_by_description_vector(vector, page=page, size=size, min_similarity=min_similarity)
     return result
 
