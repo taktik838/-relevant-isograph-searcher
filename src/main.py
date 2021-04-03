@@ -1,5 +1,9 @@
 from aiohttp import web
 from aiohttp_apispec import setup_aiohttp_apispec
+from integrations import redis
+from integrations.google import client as google
+from integrations.elasticsearch import client as elasticsearch
+from integrations.tensorflow_serving import client as tensorflow
 
 import settings
 import sentry_sdk
@@ -24,6 +28,12 @@ async def init():
     # await self_check()
     setup_routes(app)
     setup_aiohttp_apispec(app, **settings.APISPEC_CONF)
+    app.cleanup_ctx.extend([
+        redis.service,
+        google.service,
+        elasticsearch.service,
+        tensorflow.service,
+    ])
     return app
 
 
