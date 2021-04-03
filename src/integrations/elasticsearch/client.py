@@ -94,7 +94,7 @@ async def get_by_description_vector(
     })
     
     return {
-        'all': result['took'],
+        'all': result['hits']['total']['value'],
         'entities': [
             {
                 'url': res['_id'],
