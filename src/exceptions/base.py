@@ -20,7 +20,7 @@ class ServerError(Exception):
     def as_dict(self) -> Dict[str, str]:
         data: Dict[str, str] = {'code': self.__class__.__name__, 'message': self.message}
         # if ENVIRONMENT_VARIABLES.DEBUG:
-            # data['debug'] = self.debug
+        data['debug'] = self.debug
         return data
 
 

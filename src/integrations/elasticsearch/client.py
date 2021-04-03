@@ -1,6 +1,8 @@
 from typing import Any, Dict, List, Union
+import elasticsearch
 from elasticsearch.helpers import async_bulk
 from elasticsearch import AsyncElasticsearch
+from exceptions import AddEntityToBDError, NotFound
 
 from settings import ELASTICSEARCH_HOST, ELASTICSEARCH_PORT
 
@@ -41,15 +43,27 @@ def _gen_data(entities: List[Dict[str, Any]], ot_type, index=_INDEX):
 
 async def add_entities(entities: List[Dict[str, Any]], index=_INDEX):
     # await init_store()
-    return await async_bulk(_ElasticClient, _gen_data(entities, ot_type='create', index=index))
+    try:
+        result = await async_bulk(_ElasticClient, _gen_data(entities, ot_type='create', index=index))
+    except elasticsearch.helpers.errors.BulkIndexError as ex:
+        raise AddEntityToBDError([
+            {
+                'url': info['create']['_id'],
+                'error': info['create']['error']
+            }
+            for info in ex.args[1]
+        ])
 
 
 async def get_by_url(url, index=_INDEX) -> dict:
-    result = await _ElasticClient.get(index, id=url, _source_excludes='description_vector')
-    return dict(
-        url=result['_id'],
-        description=result['_source']['description']
-    )
+    try:
+        result = await _ElasticClient.get(index, id=url, _source_excludes='description_vector')
+        return dict(
+            url=result['_id'],
+            description=result['_source']['description']
+        )
+    except elasticsearch.exceptions.NotFoundError as ex:
+        raise NotFound(debug=ex.args[-1])
 
 
 async def get_by_description_vector(
@@ -92,16 +106,24 @@ async def get_by_description_vector(
     
 
 async def update(url, new_description, new_description_vector, index=_INDEX):
-    return await _ElasticClient.update(index, id=url, body={
-        'doc': {
-            'description': new_description,
-            'description_vector': new_description_vector,
-        }
-    })
+    try:
+        result = await _ElasticClient.update(index, id=url, body={
+            'doc': {
+                'description': new_description,
+                'description_vector': new_description_vector,
+            }
+        })
+    except elasticsearch.exceptions.NotFoundError as ex:
+        raise NotFound(ex.args[-1])
+    return result
     
 
 async def delete(url, index=_INDEX):
-    return await _ElasticClient.delete(index, id=url)
+    try:
+        result = await _ElasticClient.delete(index, id=url)
+        return result
+    except elasticsearch.exceptions.NotFoundError as ex:
+        raise NotFound(ex.args[-1])
 
 
 # async def get_all(page: int = 1, size: int = 10, index=_INDEX):

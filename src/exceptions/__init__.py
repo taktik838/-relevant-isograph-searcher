@@ -1,4 +1,5 @@
 from .base import ServerError
+from dataclasses import dataclass
 
 
 class MethodNotImplemented(ServerError):
@@ -28,4 +29,10 @@ class Forbidden(ServerError):
 class InputValidationError(ServerError):
     status_code = 400
     message = 'Некорректный запрос'
+    capture_by_sentry = False
+
+
+class AddEntityToBDError(ServerError):
+    status_code = 409
+    message = 'Ошибка добавления записи в бд'
     capture_by_sentry = False

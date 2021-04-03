@@ -17,4 +17,7 @@ async def get_by_speech(
     ) -> Dict[str, Union[str, float]]:
     text: str = await speech2text(speech, language_code, channels, rate, encoding)
     result = await get_by_text(text, page=page, size=size, min_similarity=min_similarity)
-    return result
+    return {
+        'text_from_speech': text,
+        **result
+    }
