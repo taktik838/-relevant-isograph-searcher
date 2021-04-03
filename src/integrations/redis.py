@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Iterable
 
 import aioredis
 from aioredis.util import _NOTSET
@@ -11,7 +11,7 @@ REDIS_CONNECTION = (REDIS_HOST, REDIS_PORT)
 
 
 class Redis:
-    client = None
+    client: aioredis.Redis = None
 
     async def __aenter__(self):
         return self
@@ -38,6 +38,9 @@ class Redis:
 
     async def get(self, key: str, *, encoding=_NOTSET) -> Any:
         return await self.client.get(key, encoding=encoding)
+    
+    async def mget(self, keys: Iterable[str], *, encoding=_NOTSET) -> Any:
+        return await self.client.mget(*keys, encoding=encoding)
 
     async def incr(self, key: str) -> bool:
         return await self.client.incr(key)
@@ -54,13 +57,22 @@ class Redis:
     async def setex(self, key: str, timeout: int, value: str) -> bool:
         return await self.client.setex(key, timeout, value)
 
+    async def msetex(self, keys: Iterable[str], timeout: int, values: Iterable[str]) -> bool:
+        tr = self.client.multi_exec()
+        for key, value in zip(keys, values):
+            tr.setex(key, timeout, value)
+        return await tr.execute()
+
     async def keys(self, pattern: str) -> Any:
         return await self.client.keys(pattern)
 
 
+CLIENT: Redis = Redis()
+
+
 async def service(app):
-    _redis = Redis()
-    await _redis.connect()
-    app.redis = _redis
+    global CLIENT
+    
+    await CLIENT.connect()
     yield
-    await app.redis.close()
+    await CLIENT.close()

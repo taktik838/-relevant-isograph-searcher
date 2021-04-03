@@ -1,9 +1,15 @@
 import asyncio
-from typing import Iterable, List, Union
+from typing import Iterable, List, Optional, Union
+import pickle
 
 import aiohttp
 import json
+from exceptions.base import ServerError
 
+from integrations.redis import CLIENT as redis
+
+
+TTL_CACHE: int = 60 * 60
 ENDPOINT = 'http://localhost:8501/v1/models'
 MODELS: tuple = (
     'embed_text',
@@ -40,14 +46,40 @@ async def service(app: aiohttp.web.Application):
     yield
     
 
-async def embed_text(text: Union[Iterable[str], str]) -> List[float]:
+async def embed_text(text: Union[Iterable[str], str]) -> List[List[float]]:
     if isinstance(text, str):
-        text = [text]
-    
-    async with aiohttp.ClientSession() as session:
-        async with session.post(
-            '/'.join((ENDPOINT, 'embed_text:predict')),
-            data=json.dumps({'instances': text})
-        ) as response:
-            result: List[float] = await response.json()
-            return result['predictions']
+        texts = [text]
+        
+    cached_result: List[Optional[List[float]]] = [
+        pickle.loads(cache)
+        for cache in await redis.mget(texts, encoding=None)
+    ]
+    no_cached: List[str] = [
+        texts[i]
+        for i, cache in enumerate(cached_result)
+        if cache is None
+    ]
+    if no_cached:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                '/'.join((ENDPOINT, 'embed_text:predict')),
+                data=json.dumps({'instances': no_cached})
+            ) as response:
+                result: List[float] = await response.json()
+                if response.status >= 400:
+                    raise ServerError(f'tensorflow serving: {result["error"]}')
+        
+        predictions_iter: Iterable[List[float]] = iter(result['predictions'])
+        all_result: List[List[float]] = [
+            cache or next(predictions_iter)
+            for cache in next(cached_result)
+        ]
+    else:
+        all_result = cached_result
+        
+    serialization_results: List[bytes] = [
+        pickle.dumps(value)
+        for value in all_result
+    ]
+    await redis.msetex(keys=texts, values=serialization_results, timeout=TTL_CACHE)
+    return all_result
