@@ -12,9 +12,9 @@ async def get_by_text(text: str, page=0, size=10, min_similarity=0.6) -> Dict[st
 
 
 async def get_by_speech(
-        speech: bytes, language_code: str = 'ru-RU', channels: int = 1, rate: int = 16000, encoding: str = 'LINEAR16', 
-        page=0, size=10, min_similarity=0.6
-    ) -> Dict[str, Union[str, float]]:
+        speech: bytes, language_code: str = 'ru-RU', channels: int = 1, rate: int = 16000,
+        encoding: str = 'LINEAR16', page=0, size=10, min_similarity=0.6
+) -> Dict[str, Union[str, float]]:
     text: str = await speech2text(speech, language_code, channels, rate, encoding)
     result = await get_by_text(text, page=page, size=size, min_similarity=min_similarity)
     return {

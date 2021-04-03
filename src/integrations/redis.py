@@ -38,7 +38,7 @@ class Redis:
 
     async def get(self, key: str, *, encoding=_NOTSET) -> Any:
         return await self.client.get(key, encoding=encoding)
-    
+
     async def mget(self, keys: Iterable[str], *, encoding=_NOTSET) -> Any:
         return await self.client.mget(*keys, encoding=encoding)
 
@@ -72,7 +72,7 @@ CLIENT: Redis = Redis()
 
 async def service(app):
     global CLIENT
-    
+
     await CLIENT.connect()
     yield
     await CLIENT.close()

@@ -1,7 +1,6 @@
 import os
-from typing import Set
 
-SENTRY_DSN="https://916f44c0ca594b04ba7fb869bd0a4e2d@o518133.ingest.sentry.io/5687879"
+SENTRY_DSN = "https://916f44c0ca594b04ba7fb869bd0a4e2d@o518133.ingest.sentry.io/5687879"
 
 APISPEC_CONF: dict = dict(
     title='Isograph searcher',

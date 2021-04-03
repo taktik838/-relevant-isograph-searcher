@@ -27,12 +27,12 @@ class BySpeechRequest(Schema):
 class BySpeechResponse(Schema):
     text = fields.Str(required=True, description='Что было распознано из голоса')
     entities = fields.Nested(EntityResult, many=True)
-    
+
 
 @docs(
     tags=['search'],
     summary="Поиск по голосу",
-    description='''Больше информации можно найти на 
+    description='''Больше информации можно найти на
     https://cloud.google.com/speech-to-text/docs/reference/rest/v1/RecognitionConfig'''
 )
 @request_schema(BySpeechRequest)
@@ -74,9 +74,9 @@ class ByTextResponse(Schema):
 @response_schema(ByTextResponse, 200)
 async def byText(request: web.Request) -> web.Response:
     kwargs = dict(
-        text=request['data'].get('text'), 
-        page=int(request.match_info['page'].replace('/','') or 1), 
-        size=int(request['data'].get('per_one_time')), 
+        text=request['data'].get('text'),
+        page=int(request.match_info['page'].replace('/','') or 1),
+        size=int(request['data'].get('per_one_time')),
         min_similarity=float(request['data'].get('min_similarity'))
     )
     result = await get_by_text(**{

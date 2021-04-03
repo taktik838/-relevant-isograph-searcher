@@ -37,13 +37,13 @@ async def service(app: web.Application):
 def _gen_data(entities: List[Dict[str, Any]], ot_type, index=INDEX):
     for entity in entities:
         yield {
-            '_index': index, 
+            '_index': index,
             "_id": entity['url'],
             '_op_type': ot_type,
-            "description": entity.get('description', ''), 
-            "description_vector": list(entity['description_vector']), 
+            "description": entity.get('description', ''),
+            "description_vector": list(entity['description_vector']),
         }
-    
+
 
 async def add_entities(entities: List[Dict[str, Any]], index=INDEX):
     # await init_store()
@@ -57,6 +57,7 @@ async def add_entities(entities: List[Dict[str, Any]], index=INDEX):
             }
             for info in ex.args[1]
         ])
+    return result
 
 
 async def get_by_url(url, index=INDEX) -> dict:
@@ -72,7 +73,7 @@ async def get_by_url(url, index=INDEX) -> dict:
 
 async def get_by_description_vector(
         description_vector, page: int = 1, size: int = 10, min_similarity: float = 0.6, index=INDEX
-    ) -> List[Dict[str, Union[int, str]]]:
+) -> List[Dict[str, Union[int, str]]]:
     result = await CLIENT.search(index=index, body={
         "size": size,
         "from": max(0, page - 1) * size,
@@ -82,13 +83,13 @@ async def get_by_description_vector(
         },
         "query": {
             "script_score": {
-                "query" : {"match_all": {}},
+                "query": {"match_all": {}},
                 "script": {
                     "source": "double value = cosineSimilarity(params.description_vector, 'description_vector');"
                               "if (value < 1) {"
                               "    return 1 - Math.acos(value) / Math.PI"
                               "}"
-                              "return 1", 
+                              "return 1",
                     "params": {
                         "description_vector": description_vector
                     }
@@ -96,7 +97,7 @@ async def get_by_description_vector(
             }
         }
     })
-    
+
     return {
         'all': result['hits']['total']['value'],
         'entities': [
@@ -107,7 +108,7 @@ async def get_by_description_vector(
             for res in result['hits']['hits']
         ]
     }
-    
+
 
 async def update(url, new_description, new_description_vector, index=INDEX):
     try:
@@ -120,7 +121,7 @@ async def update(url, new_description, new_description_vector, index=INDEX):
     except elasticsearch.exceptions.NotFoundError as ex:
         raise NotFound(ex.args[-1])
     return result
-    
+
 
 async def delete(url, index=INDEX):
     try:

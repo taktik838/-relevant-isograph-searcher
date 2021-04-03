@@ -1,5 +1,4 @@
 from .base import ServerError
-from dataclasses import dataclass
 
 
 class MethodNotImplemented(ServerError):

@@ -23,6 +23,7 @@ sentry_sdk.init(
     integrations=[AioHttpIntegration()]
 )
 
+
 async def init():
     app = web.Application(middlewares=MIDDLEWARES, client_max_size=0)
     # await self_check()
@@ -35,7 +36,6 @@ async def init():
         tensorflow.service,
     ])
     return app
-
 
 
 if __name__ == '__main__':

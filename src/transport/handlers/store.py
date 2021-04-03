@@ -7,8 +7,7 @@ from marshmallow import fields
 from services.store import add_entities, update_entity
 from integrations.elasticsearch import client as es_api
 
- 
- 
+
 class Entity(Schema):
     url = fields.Url(required=True, allow_none=False)
     description = fields.Str(required=False, allow_none=False, missing='')
@@ -25,7 +24,7 @@ class AddRequest(Schema):
 
 class AddResponse(Schema):
     success = fields.Bool(required=True, allow_none=False, description='Добавилась запись в elasticsearch или нет')
-    error_message = fields.Str(required=False, allow_none=False, 
+    error_message = fields.Str(required=False, allow_none=False,
                                description='Почему запись не была добавлена. Только если seccess=false')
 
 
@@ -47,7 +46,7 @@ class UpdateRequest(Schema):
 
 class UpdateResponse(Schema):
     success = fields.Bool(required=True, allow_none=False, description='Обновилась запись в elasticsearch или нет')
-    error_message = fields.Str(required=False, allow_none=False, 
+    error_message = fields.Str(required=False, allow_none=False,
                                description='Почему запись не была обновлена. Только если seccess=false')
 
 
@@ -68,7 +67,7 @@ class DeleteRequest(Schema):
 
 class DeleteResponse(Schema):
     success = fields.Bool(required=True, allow_none=False, description='Удалилась запись в elasticsearch или нет')
-    error_message = fields.Str(required=False, allow_none=False, 
+    error_message = fields.Str(required=False, allow_none=False,
                                description='Почему запись не была удалена. Только если seccess=false')
 
 
