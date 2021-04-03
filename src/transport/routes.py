@@ -1,6 +1,6 @@
 from aiohttp import web
-from transport.handlers import store
-from transport.handlers import searcher
+
+from transport.handlers import searcher, store
 
 
 def setup_routes(app: web.Application):

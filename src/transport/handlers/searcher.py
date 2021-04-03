@@ -2,9 +2,9 @@ import base64
 
 from aiohttp import web
 from aiohttp_apispec import docs, request_schema, response_schema
-from integrations.elasticsearch.client import get_by_url
 from marshmallow import Schema, fields
 
+from integrations.elasticsearch.client import get_by_url
 from services.searcher import get_by_speech, get_by_text
 from transport.handlers.store import Entity
 

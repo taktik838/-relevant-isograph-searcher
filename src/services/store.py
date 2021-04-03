@@ -1,6 +1,7 @@
 from typing import Dict, Iterable, List
-from integrations.tensorflow_serving.client import embed_text
+
 from integrations.elasticsearch import client as es_api
+from integrations.tensorflow_serving.client import embed_text
 
 
 async def add_entities(raw_entities: Iterable[Dict[str, str]]) -> None:

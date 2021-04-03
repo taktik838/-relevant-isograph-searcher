@@ -1,8 +1,8 @@
 from typing import Dict, List, Union
 
+from integrations.elasticsearch.client import get_by_description_vector
 from integrations.google.client import speech2text
 from integrations.tensorflow_serving.client import embed_text
-from integrations.elasticsearch.client import get_by_description_vector
 
 
 async def get_by_text(text: str, page=0, size=10, min_similarity=0.6) -> Dict[str, Union[str, float]]:

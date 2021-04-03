@@ -1,15 +1,17 @@
+import sentry_sdk
 from aiohttp import web
 from aiohttp_apispec import setup_aiohttp_apispec
-from integrations import redis
-from integrations.google import client as google
-from integrations.elasticsearch import client as elasticsearch
-from integrations.tensorflow_serving import client as tensorflow
+from sentry_sdk.integrations.aiohttp import AioHttpIntegration
 
 import settings
-import sentry_sdk
-from transport.routes import setup_routes
-from sentry_sdk.integrations.aiohttp import AioHttpIntegration
+from integrations import redis
+from integrations.elasticsearch import client as elasticsearch
+from integrations.google import client as google
+from integrations.tensorflow_serving import client as tensorflow
 from transport.middlewares import MIDDLEWARES
+from transport.routes import setup_routes
+
+
 # from utils.self_check import self_check
 
 

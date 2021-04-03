@@ -1,10 +1,12 @@
 from typing import Any, Dict, List, Union
 
-from aiohttp import web
 import elasticsearch
+from aiohttp import web
 from elasticsearch._async.client import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
+
 from exceptions import AddEntityToBDError, NotFound
+
 
 # from integrations.elasticsearch import HOST, PORT, INDEX#, CLIENT
 

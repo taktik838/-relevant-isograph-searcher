@@ -1,12 +1,9 @@
 import asyncio
 from traceback import print_exc
-from typing import Awaitable
-from typing import Callable
-from typing import Optional
+from typing import Awaitable, Callable, Optional
 
 import sentry_sdk
-from aiohttp import web
-from aiohttp import web_exceptions
+from aiohttp import web, web_exceptions
 from marshmallow import ValidationError as MarshmallowValidationError
 
 import exceptions

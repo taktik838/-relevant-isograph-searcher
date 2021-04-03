@@ -1,11 +1,9 @@
 from aiohttp import web
-from aiohttp_apispec import docs
-from aiohttp_apispec import request_schema
-from aiohttp_apispec import response_schema
-from marshmallow import Schema
-from marshmallow import fields
-from services.store import add_entities, update_entity
+from aiohttp_apispec import docs, request_schema, response_schema
+from marshmallow import Schema, fields
+
 from integrations.elasticsearch import client as es_api
+from services.store import add_entities, update_entity
 
 
 class Entity(Schema):

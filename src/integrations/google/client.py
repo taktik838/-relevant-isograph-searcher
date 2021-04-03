@@ -1,6 +1,6 @@
+import asyncio
 import hashlib
 
-import asyncio
 from aiohttp import web
 from google.cloud import speech
 
