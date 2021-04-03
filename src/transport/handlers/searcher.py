@@ -44,7 +44,7 @@ async def bySpeech(request: web.Request) -> web.Response:
         channels=request['data'].get('channels'),
         rate=request['data'].get('rate'),
         encoding=request['data'].get('encoding'),
-        page=int(request.match_info.get('page', 1)),
+        page=int(request.match_info['page'].replace('/','') or 1),
         size=request['data'].get('per_one_time'),
         min_similarity=request['data'].get('min_similarity'),
     )
@@ -75,7 +75,7 @@ class ByTextResponse(Schema):
 async def byText(request: web.Request) -> web.Response:
     kwargs = dict(
         text=request['data'].get('text'), 
-        page=int(request.match_info.get('page')), 
+        page=int(request.match_info['page'].replace('/','') or 1), 
         size=int(request['data'].get('per_one_time')), 
         min_similarity=float(request['data'].get('min_similarity'))
     )

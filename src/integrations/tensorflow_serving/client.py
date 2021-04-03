@@ -51,7 +51,7 @@ async def embed_text(text: Union[Iterable[str], str]) -> List[List[float]]:
         texts = [text]
         
     cached_result: List[Optional[List[float]]] = [
-        pickle.loads(cache)
+        pickle.loads(cache) if cache else None
         for cache in await redis.mget(texts, encoding=None)
     ]
     no_cached: List[str] = [
@@ -72,7 +72,7 @@ async def embed_text(text: Union[Iterable[str], str]) -> List[List[float]]:
         predictions_iter: Iterable[List[float]] = iter(result['predictions'])
         all_result: List[List[float]] = [
             cache or next(predictions_iter)
-            for cache in next(cached_result)
+            for cache in cached_result
         ]
     else:
         all_result = cached_result
