@@ -84,7 +84,7 @@ async def byText(request: web.Request) -> web.Response:
         for key, value in kwargs.items()
         if value is not None
     })
-    return web.json_response({'entities': result})
+    return web.json_response(result)
 
 
 class ByUrlRequest(Schema):
