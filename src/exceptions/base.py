@@ -1,7 +1,6 @@
 from typing import Dict
 
-
-# from settings import ENVIRONMENT_VARIABLES
+from settings import ENV_VARS
 
 
 class ServerError(Exception):
@@ -20,8 +19,8 @@ class ServerError(Exception):
 
     def as_dict(self) -> Dict[str, str]:
         data: Dict[str, str] = {'code': self.__class__.__name__, 'message': self.message}
-        # if ENVIRONMENT_VARIABLES.DEBUG:
-        data['debug'] = self.debug
+        if ENV_VARS.DEBUG:
+            data['debug'] = self.debug
         return data
 
 
