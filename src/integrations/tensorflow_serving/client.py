@@ -7,10 +7,11 @@ import aiohttp
 
 from exceptions.base import ServerError
 from integrations.redis import CLIENT as redis
+from settings import ENV_VARS
 
 
-TTL_CACHE: int = 60 * 60
-ENDPOINT = 'http://localhost:8501/v1/models'
+TTL_CACHE: int = ENV_VARS.TENSORFLOW_SERVING_TTL_CACHE
+ENDPOINT: str = ENV_VARS.TENSORFLOW_SERVING_ENDPOINT
 MODELS: tuple = (
     'embed_text',
 )
@@ -46,6 +47,8 @@ async def service(app: aiohttp.web.Application):
 async def embed_text(text: Union[Iterable[str], str]) -> List[List[float]]:
     if isinstance(text, str):
         texts = [text]
+    else:
+        texts = text
 
     cached_result: List[Optional[List[float]]] = [
         pickle.loads(cache) if cache else None

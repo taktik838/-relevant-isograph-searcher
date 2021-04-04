@@ -1,14 +1,16 @@
 import asyncio
 import hashlib
+import os
 
 from aiohttp import web
 from google.cloud import speech
 
 from integrations.redis import CLIENT as redis
+from settings import ENV_VARS
 
 
-AUTH_PATH: str = 'src/integrations/google/secret.json'
-TTL_CACHE: int = 60 * 60
+AUTH_PATH: str = ENV_VARS.GOOGLE_AUTH_PATH
+TTL_CACHE: int = ENV_VARS.GOOGLE_TTL_CACHE
 
 CLIENT: speech.SpeechAsyncClient
 

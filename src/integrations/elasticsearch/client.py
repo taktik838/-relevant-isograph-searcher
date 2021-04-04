@@ -6,14 +6,12 @@ from elasticsearch._async.client import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
 
 from exceptions import AddEntityToBDError, NotFound
+from settings import ENV_VARS
 
 
-# from integrations.elasticsearch import HOST, PORT, INDEX#, CLIENT
-
-
-HOST = 'localhost'
-PORT = 9200
-INDEX = 'store'
+HOST: str = ENV_VARS.ELASTICSEARCH_HOST
+PORT: int = ENV_VARS.ELASTICSEARCH_PORT
+INDEX: str = ENV_VARS.ELASTICSEARCH_INDEX
 
 CLIENT: AsyncElasticsearch = None
 

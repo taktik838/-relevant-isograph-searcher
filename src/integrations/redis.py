@@ -3,11 +3,13 @@ from typing import Any, Iterable
 import aioredis
 from aioredis.util import _NOTSET
 
+from settings import ENV_VARS
 
-REDIS_HOST = 'localhost'
-REDIS_PORT = '6379'
-REDIS_TECHNICAL_DB = 2
-REDIS_CONNECTION = (REDIS_HOST, REDIS_PORT)
+
+HOST: str = ENV_VARS.REDIS_HOST
+PORT: int = ENV_VARS.REDIS_PORT
+TECHNICAL_DB: int = ENV_VARS.REDIS_TECHNICAL_DB
+CONNECTION = (HOST, PORT)
 
 
 class Redis:
@@ -22,8 +24,8 @@ class Redis:
     async def connect(self):
         if not self.client:
             self.client: aioredis.Redis = await aioredis.create_redis_pool(
-                REDIS_CONNECTION,
-                # db=REDIS_TECHNICAL_DB,
+                CONNECTION,
+                db=TECHNICAL_DB,
                 encoding='utf-8',
             )
 

@@ -1,7 +1,29 @@
-import os
+from os import environ
+from typing import List
+
+from pydantic.main import BaseModel
 
 
-SENTRY_DSN = "https://916f44c0ca594b04ba7fb869bd0a4e2d@o518133.ingest.sentry.io/5687879"
+class EnvironmentVariables(BaseModel):
+    DEBUG: bool
+    ENVIRONMENT: str
+    SENTRY_DSN: str
+    ELASTICSEARCH_HOST: str
+    ELASTICSEARCH_PORT: int
+    REDIS_HOST: str
+    REDIS_PORT: int
+    REDIS_TECHNICAL_DB: int
+    TENSORFLOW_SERVING_TTL_CACHE: int
+    TENSORFLOW_SERVING_ENDPOINT: str
+    GOOGLE_AUTH_PATH: str
+    GOOGLE_TTL_CACHE: int
+    ELASTICSEARCH_HOST: str
+    ELASTICSEARCH_PORT: int
+    ELASTICSEARCH_INDEX: str
+
+
+ENV_VARS: EnvironmentVariables = EnvironmentVariables.parse_obj(environ)
+
 
 APISPEC_CONF: dict = dict(
     title='Isograph searcher',
@@ -10,7 +32,3 @@ APISPEC_CONF: dict = dict(
     swagger_path='/api/swagger',
     static_path='/api/swagger/static'
 )
-
-
-ELASTICSEARCH_HOST: str = os.getenv('ELASTICSEARCH_HOST', 'localhost')
-ELASTICSEARCH_PORT: int = int(os.getenv('ELASTICSEARCH_PORT', '9200'))
