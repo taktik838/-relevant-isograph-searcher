@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "a965e85f-b8fe-4ffc-ba59-355130ec2aec",
+		"name": "isograph",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "sercher",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"entity\": [\n        {\n            \"url\": \"https://www.tensorflow.org/tfx/serving/serving_config\",\n            \"description\": \"Конфигурация обслуживания Tensorflow\"\n        },\n        {\n            \"url\": \"https://pypi.org/project/cachetools/\",\n            \"description\": \"Python library for cachering data\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/entity",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"entity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getByUrl",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"url\": \"https://www.tensorflow.org/tfx/serving/serving_config\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/entity/get/byUrl",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"entity",
+								"get",
+								"byUrl"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getByText",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"url\": \"https://www.tensorflow.org/tfx/serving/serving_config\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/entity/get/byUrl",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"entity",
+								"get",
+								"byUrl"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBySpeech Draft",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"url\": \"https://www.tensorflow.org/tfx/serving/serving_config\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/entity/get/bySpeech",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"entity",
+								"get",
+								"bySpeech"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"entity\": [\n        {\n            \"url\": \"https://www.tensorflow.org/tfx/serving/serving_config\",\n            \"description\": \"Конфигурация обслуживания Tensorflow\"\n        },\n        {\n            \"url\": \"https://pypi.org/project/cachetools/\",\n            \"description\": \"Python library for cachering data\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/entity",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"entity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"entity\": [\n        {\n            \"url\": \"https://www.tensorflow.org/tfx/serving/serving_config\",\n            \"description\": \"Конфигурация обслуживания Tensorflow\"\n        },\n        {\n            \"url\": \"https://pypi.org/project/cachetools/\",\n            \"description\": \"Python library for cachering data\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/entity",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"entity"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
