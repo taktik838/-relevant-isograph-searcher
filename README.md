@@ -18,4 +18,4 @@ Will be started:
 After starting you can find swaggers:
 * http://localhost:8085/api/swagger
 
-
+For testing you can download [postman collections](https://raw.githubusercontent.com/taktik838/isograph-searcher/master/isograph.postman_collection.json).
