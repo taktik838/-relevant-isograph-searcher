@@ -1,0 +1,17 @@
+.*
+!.dockerignore
+
+**/*.flac
+**/*.mp3
+**/*.ipynb
+**/*.tsv
+**/*.tar
+**/*.gz
+
+**/test*
+!tests/
+
+venv
+**/__pycache__/*
+
+src/integrations/google/secret.json

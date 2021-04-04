@@ -1,16 +1,43 @@
 version: "3.8"
 services:
-  elastic:
+  elasticsearch:
     image: elasticsearch:7.11.2
-    container_name: elasticsearch
+    container_name: isograph_searcher-elasticsearch
+    environment:
+      - discovery.type=single-node
+    mem_limit: 3G
     volumes:
       - isograph_elasticsearch:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-      - 9300:9300
+    expose:
+      - 9200
+      - 9300
+  redis:
+    image: redis:latest
+    container_name: isograph_searcher-redis
+    expose: 
+      - 6379
+  tensorflow_serving:
+    image: embed_text
+    container_name: isograph_searcher-tensorflow_serving
+    expose:
+      - 8501
+      - 8500
   gateway:
-    image: python:3.8
-    container_name: gateway
+    image: gateway
+    container_name: isograph_searcher-gateway
+    env_file: docker.env
+    command: ["./wait-for-it.sh", "elasticsearch:9200", "--", "python", "main.py"]
+    volumes:
+      - type: bind
+        source: ./src/integrations/google/secret.json
+        target: /src/integrations/google/secret.json
+    depends_on:
+      - elasticsearch
+      - redis
+      - tensorflow_serving
+    ports: 
+      - 8085:8085
+  
 
 volumes:
   isograph_elasticsearch:

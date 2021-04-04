@@ -30,6 +30,11 @@ async def service(app: web.Application):
             }
         }
     }
+    try:
+        await CLIENT.indices.create(index=INDEX)
+    except elasticsearch.exceptions.RequestError as ex:
+        if ex.args[1] == 'resource_already_exists_exception':
+            pass
     await CLIENT.indices.put_mapping(index=INDEX, body=mapping)
     yield
 
