@@ -17,13 +17,13 @@ services:
     expose: 
       - 6379
   tensorflow_serving:
-    image: embed_text
+    image: opopernyak/isograph_searcher_tensorflow_serving
     container_name: isograph_searcher-tensorflow_serving
     expose:
       - 8501
       - 8500
   gateway:
-    image: gateway
+    image: opopernyak/isograph_searcher
     container_name: isograph_searcher-gateway
     env_file: docker.env
     command: ["./wait-for-it.sh", "elasticsearch:9200", "--", "python", "main.py"]
