@@ -70,7 +70,7 @@ class ByTextResponse(Schema):
     tags=['search'],
     summary="Поиск по тексту"
 )
-@request_schema(ByTextRequest)
+@request_schema(ByTextRequest, locations=['query'])
 @response_schema(ByTextResponse, 200)
 async def byText(request: web.Request) -> web.Response:
     kwargs = dict(
@@ -100,7 +100,7 @@ class ByUrlResponse(Schema):
     tags=['search'],
     summary="Поиск по url"
 )
-@request_schema(ByUrlRequest)
+@request_schema(ByUrlRequest, locations=['query'])
 @response_schema(ByUrlResponse, 200)
 async def byUrl(request: web.Request) -> web.Response:
     result = await get_by_url(url=request['data']['url'])
@@ -119,7 +119,7 @@ class GetAllResponse(Schema):
     tags=['search'],
     summary="Получить все файлы"
 )
-@request_schema(GetAllRequest)
+@request_schema(GetAllRequest, locations=['query'])
 @response_schema(GetAllResponse, 200)
 async def get_all(request: web.Request) -> web.Response:
     return web.json_response({'success': True})
